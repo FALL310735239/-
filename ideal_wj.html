@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理想L8+L9 & 问界M8+M9 销量对比</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        body{margin:0;padding:20px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;background:linear-gradient(135deg,#1a2a6c,#2c3e50);min-height:100vh;color:#e0e0e0}
+        .container{max-width:1200px;margin:0 auto;background:rgba(255,255,255,.08);backdrop-filter:blur(12px);border-radius:16px;border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 32px rgba(0,0,0,.36);padding:30px}
+        h1{text-align:center;color:#fff;font-weight:500;text-shadow:0 2px 4px rgba(0,0,0,.2)}
+        #chart{width:100%;height:500px}
+        .legend-info{margin-top:20px;padding:20px;background:rgba(255,255,255,.1);border-radius:12px;font-size:14px;color:#d0d0d0;border:1px solid rgba(255,255,255,.1)}
+        .legend-info h3{color:#fff;margin-top:0}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>理想L8+L9 终端销量 & 问界M8+M9 零售销量 合并对比（2022-2025）</h1>
+    <div id="chart"></div>
+    <div class="legend-info">
+        <h3>说明</h3>
+        <p>• 理想 L8+L9：2022-06 起终端量合计（L8 仅 10-12 月数据已修正）</p>
+        <p>• 问界 M8+M9：2024-02 起零售量合计（M8 2025-04 起）</p>
+        <p>• 其余月份留空；2025-12 暂无数据</p>
+    </div>
+</div>
+
+<script>
+const chartDom = document.getElementById('chart');
+const myChart = echarts.init(chartDom);
+
+const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+/* ====== 理想 L8+L9 终端量（2022 年已修正） ====== */
+const ideal2022 = [null,null,null,null,null,0+113,null+637,null+370,null+10124,40+9139,5921+9160,10254+10608];
+const ideal2023 = [6144+8034,8125+7256,6628+5866,7015+6149,7605+6825,9868+8478,113+8940,11045+10533,11306+11967,12078+12653,12701+12254,14945+15109];
+const ideal2024 = [9160+8816,5563+6262,7675+9644,5083+6548,5300+6128,5721+6993,6604+7437,5480+6643,7102+711,6441+6369,6374+6367,8557+7703];
+const ideal2025 = [4382+4437,3325+3257,5231+4516,5349+3748,5916+6729,4320+4862,3135+3638,2641+3796,2437+3698,2202+2072,2122+2002,null];
+
+/* ====== 问界 M8+M9 零售量（仅两表均出现月份） ====== */
+const m8m92023 = [null,null,null,null,null,null,null,null,null,null,null,null]; // 全年无数据
+const m8m92024 = [null,5251,5446,15139,16462,16525,17151,16955,15207,16595,16409,14911]; // 2024-02 起
+const m8m92025 = [12483,5242,5103,1883+10407,12116+15481,21185+13718,21564+10098,21537+10067,21244+10503,17484+8010,16284+7804,null]; // 2025-04 起合计
+
+const option = {
+    title:{text:'理想L8+L9 终端销量 & 问界M8+M9 零售销量 合并趋势',left:'center',top:10,textStyle:{fontSize:18,fontWeight:'normal',color:'#fff'}},
+    tooltip:{trigger:'axis',backgroundColor:'rgba(20,30,40,.9)',borderColor:'rgba(255,255,255,.2)',textStyle:{color:'#fff'},
+        formatter:p=>{
+            let res=p[0].name+'<br/>';
+            p.forEach(i=>{if(i.value!=null)res+=`<span style="display:inline-block;margin-right:5px;border-radius:10px;width:10px;height:10px;background:${i.color};"></span>${i.seriesName}: ${i.value.toLocaleString()} 辆<br/>`;});
+            return res;
+        }},
+    legend:{data:['理想2022','理想2023','理想2024','理想2025','问界2023','问界2024','问界2025'],top:40,textStyle:{color:'#e0e0e0'}},
+    grid:{left:'3%',right:'4%',bottom:'3%',top:80,containLabel:true,backgroundColor:'rgba(255,255,255,.05)',borderColor:'rgba(255,255,255,.1)'},
+    xAxis:{type:'category',boundaryGap:false,data:months,axisLine:{lineStyle:{color:'rgba(255,255,255,.3)'}},axisLabel:{color:'rgba(255,255,255,.7)'}},
+    yAxis:{type:'value',name:'销量（辆）',nameTextStyle:{color:'rgba(255,255,255,.7)'},axisLine:{lineStyle:{color:'rgba(255,255,255,.3)'}},axisLabel:{color:'rgba(255,255,255,.7)'},splitLine:{lineStyle:{color:'rgba(255,255,255,.1)'}}},
+    series:[
+        {name:'理想2022',type:'line',smooth:true,symbol:'circle',symbolSize:8,lineStyle:{width:3,color:'#5470c6'},data:ideal2022},
+        {name:'理想2023',type:'line',smooth:true,symbol:'circle',symbolSize:8,lineStyle:{width:3,color:'#91cc75'},data:ideal2023},
+        {name:'理想2024',type:'line',smooth:true,symbol:'circle',symbolSize:8,lineStyle:{width:3,color:'#fac858'},data:ideal2024},
+        {name:'理想2025',type:'line',smooth:true,symbol:'circle',symbolSize:8,lineStyle:{width:3,color:'#ee6666'},data:ideal2025},
+        {name:'问界2023',type:'line',smooth:true,symbol:'circle',symbolSize:8,lineStyle:{width:3,color:'#73c0de'},data:m8m92023},
+        {name:'问界2024',type:'line',smooth:true,symbol:'circle',symbolSize:8,lineStyle:{width:3,color:'#3ba272'},data:m8m92024},
+        {name:'问界2025',type:'line',smooth:true,symbol:'circle',symbolSize:8,lineStyle:{width:3,color:'#fc8452'},data:m8m92025}
+    ]
+};
+
+myChart.setOption(option);
+window.addEventListener('resize',()=>myChart.resize());
+</script>
+</body>
+</html>
